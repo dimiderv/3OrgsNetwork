@@ -2,27 +2,27 @@
 
 ## link: https://kctheservant.medium.com/add-a-peer-to-an-organization-in-test-network-hyperledger-fabric-v2-2-4a08cb901c98
 
-# Step 1 
+### Step 1 
 ```bash
 ./network.sh up createChannel -ca
 ```
-# Step 2: Deploy chaincode SACC
+### Step 2: Deploy chaincode SACC
 ```bash
         ./network.sh deployCC -ccn mycc -ccp ../chaincode/sacc -ccl go
 ```
-#Step 3: Test chaincode
+### Step 3: Test chaincode
 ```bash
         peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls true --cafile $ORDERER_CA -C mychannel -n mycc --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses localhost:9051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":["set","name","Alice"]}'
 ````
 ```bash
         peer chaincode query -C mychannel -n mycc -c '{"Args":["get","name"]}'
 ```
-# Step 4: Generate crypto material for new peer
+### Step 4: Generate crypto material for new peer
 
 ```bash
           export PATH=$PATH:${PWD}/../bin export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/org1.example.com/ fabric-ca-client register --caname ca-org1 --id.name peer1 --id.secret peer1pw --id.type peer --tls.certfiles ${PWD}/organizations/fabric-ca/org1/tls-cert.pem mkdir -p organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com fabric-ca-client enroll -u https://peer1:peer1pw@localhost:7054 --caname ca-org1 -M ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp --csr.hosts peer1.org1.example.com --tls.certfiles ${PWD}/organizations/fabric-ca/org1/tls-cert.pem cp ${PWD}/organizations/peerOrganizations/org1.example.com/msp/config.yaml ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp/config.yaml fabric-ca-client enroll -u https://peer1:peer1pw@localhost:7054 --caname ca-org1 -M ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls --enrollment.profile tls --csr.hosts peer1.org1.example.com --csr.hosts localhost --tls.certfiles ${PWD}/organizations/fabric-ca/org1/tls-cert.pem cp ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt cp ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/signcerts/* ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/server.crt cp ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/keystore/* ${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/server.key
 ```
-# Step 5: Create configuration for the new peer and bring up the container ( Only Once )
+### Step 5: Create configuration for the new peer and bring up the container ( Only Once )
 
 The following code is the on that works. Configuration on article is inacurate
 ```
@@ -80,7 +80,7 @@ SPDX-License-Identifier: Apache-2.0
 ```bash
         docker-compose -f docker/docker-compose-peer1org1.yaml up -d
 ```
-# Step 6 Join peer to existing channel
+### Step 6 Join peer to existing channel
 ```bash
           peer channel list CORE_PEER_ADDRESS=localhost:8051 peer channel list
 
@@ -90,7 +90,7 @@ SPDX-License-Identifier: Apache-2.0
 
           CORE_PEER_ADDRESS=localhost:8051 peer channel getinfo -c mychannel
 ```
-# Step 7: Install chaincode to that peer
+### Step 7: Install chaincode to that peer
 ```bash
             peer chaincode query -C mychannel -n mycc -c '{"Args":["get","name"]}' CORE_PEER_ADDRESS=localhost:8051 peer chaincode query -C mychannel -n mycc -c '{"Args":["get","name"]}'
 
@@ -100,7 +100,7 @@ SPDX-License-Identifier: Apache-2.0
 
             docker images dev*
 ```
-# Step 8 Test chaincode using new peer
+### Step 8 Test chaincode using new peer
 ```bash
               peer chaincode query -C mychannel -n mycc -c '{"Args":["get","name"]}' CORE_PEER_ADDRESS=localhost:8051 peer chaincode query -C mychannel -n mycc -c '{"Args":["get","name"]}'
 
