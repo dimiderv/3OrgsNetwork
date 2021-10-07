@@ -2,7 +2,7 @@ This Tutorial demostates how to add a new peer to an existing org
 
 link: https://kctheservant.medium.com/add-a-peer-to-an-organization-in-test-network-hyperledger-fabric-v2-2-4a08cb901c98
 
-#step 1 
+*step 1 
         ./network.sh up createChannel -ca
 
 #Step 2: Deploy chaincode SACC
